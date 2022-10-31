@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Open issues in repos for errors in publiccode.yml."""
 
+import argparse
 import os
 import re
 import requests
@@ -10,6 +11,7 @@ import jinja2
 import github
 
 from collections import namedtuple
+from datetime import datetime, timezone, timedelta
 
 API_BASEURL = os.getenv('API_BASEURL', 'https://api.developers.italia.it/v1')
 
@@ -39,14 +41,22 @@ def to_markdown(error: str) -> str:
 
     return out
 
-def software_logs():
+def software_logs(days):
     logs = []
 
     page = True
     page_after = ""
 
+    begin = datetime.now(timezone.utc) - timedelta(days=days)
+
     while page:
-        res = requests.get(f"{API_BASEURL}/logs{page_after}")
+        res = requests.get(
+            f'{API_BASEURL}/logs{page_after}',
+            params={
+                'from': begin.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                'page[size]': 100,
+            }
+        )
         res.raise_for_status()
 
         body = res.json()
@@ -54,7 +64,6 @@ def software_logs():
 
         page_after = body['links']['next']
         page = bool(page_after)
-        page = False
 
     for log in logs:
         match = re.search(r"^\[(?P<repo>.+?)\] BAD publiccode.yml: (?P<parser_output>.*)", log['message'], re.MULTILINE|re.DOTALL)
@@ -62,6 +71,15 @@ def software_logs():
             yield SoftwareLog(match.group('repo'), to_markdown(match.group('parser_output')))
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Open issues in repos for errors in publiccode.yml from the logs in Developers Italia API.",
+    )
+    parser.add_argument(
+        '--since', action="store", dest="since", type=int,
+        default=1, help="Number of days to go back for the analyzed logs (default: 1)"
+    )
+    args = parser.parse_args()
+
     gh = github.Github(os.getenv("GITHUB_TOKEN"))
     github.enable_console_debug_logging()
 
