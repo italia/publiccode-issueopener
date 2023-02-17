@@ -1,0 +1,61 @@
+{# Keep the following line as first line of the output #}
+<!-- {% for k, v in hidden_fields.items() %}{{ k }}={{ v }},{% endfor %} -->
+
+Ci sono errori nel file `publiccode.yml`:
+
+{{ formatted_error_output}}
+
+**Vuoi rendere automatico questo controllo?**
+
+<details>
+  <summary>
+    Aggiungi
+    <a href="https://github.com/italia/publiccode-parser-action">
+      <strong>publiccode-parser-go-action</strong>
+    </a> al tuo repository GitHub, per verificare automaticamente il tuo
+    publiccode.yml a ogni commit o pull request:
+  </summary>
+
+  <pre>
+    <samp>
+# Aggiungi questo a .github/workflows/publiccode-validation.yml
+#
+on: [pull_request]
+
+jobs:
+  publiccode_validation:
+    runs-on: ubuntu-latest
+    name: publiccode validation
+    steps:
+    - uses: actions/checkout@v3
+    - uses: italia/publiccode-parser-action@v1
+      with:
+        publiccode: 'publiccode.yml'
+    </samp>
+  </pre>
+</details>
+
+<details>
+  <summary>
+    Usa
+    <a href="https://github.com/italia/publiccode-parser-go">
+      <strong>publiccode-parser-go</strong>
+    </a> per verificare il tuo publiccode.yml in locale da riga di comando:
+  </summary>
+
+  <p>
+    <pre>
+<samp>$ <kbd>docker run -i italia/publiccode-parser-go /dev/stdin < publiccode.yml</kbd></samp>
+    </pre>
+   </p>
+</details>
+
+<!-- {{ debug }} -->
+
+**Serve aiuto?**
+
+Unisciti a [https://slack.developers.italia.it](https://slack.developers.italia.it) e chiedi nel canale #publiccode o usa [Forum Italia](https://forum.italia.it/c/software-open-source-per-la-pa/49).
+
+<sub>[:link: Developers Italia](https://developers.italia.it/it/riuso/pubblicazione) | [:page_facing_up: il formato publiccode.yml](https://yml.publiccode.tools) | [:information_source:  Il mio codice sorgente](https://github.com/italia/publiccode-issueopener) | [*]({{ api_log_url }})</sub>
+
+<!-- **commands** -->

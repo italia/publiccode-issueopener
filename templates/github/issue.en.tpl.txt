@@ -1,0 +1,64 @@
+{# Keep the following line as first line of the output #}
+<!-- {% for k, v in hidden_fields.items() %}{{ k }}={{ v }},{% endfor %} -->
+
+There are errors in the `publiccode.yml` file:
+
+{{ formatted_error_output}}
+
+**Want to automate this check?**
+
+<details>
+  <summary>
+    Add
+    <a href="https://github.com/italia/publiccode-parser-action">
+      <strong>publiccode-parser-go-action</strong>
+    </a> to your GitHub repository, to automatically check your publiccode.yml
+    at every commit
+  </summary>
+
+  <pre>
+    <samp>
+# Aggiungi questo a .github/workflows/publiccode-validation.yml
+#
+on: [pull_request]
+
+jobs:
+  publiccode_validation:
+    runs-on: ubuntu-latest
+    name: publiccode validation
+    steps:
+    - uses: actions/checkout@v3
+    - uses: italia/publiccode-parser-action@v1
+      with:
+        publiccode: 'publiccode.yml'
+    </samp>
+  </pre>
+</details>
+
+<details>
+  <summary>
+    Use
+    <a href="https://github.com/italia/publiccode-parser-go">
+      <strong>publiccode-parser-go</strong>
+    </a> to validate your publiccode.yml from the command line
+  </summary>
+
+  <p>
+    <pre>
+      <samp>$ <kbd>docker run -i italia/publiccode-parser-go /dev/stdin < publiccode.yml</kbd></samp>
+    </pre>
+   </p>
+</details>
+
+{{ debug }}
+
+**Not sure what to do?**
+
+Join [https://slack.developers.italia.it][https://slack.developers.italia.it] and ask in
+the #publiccode channel or head to [https://forum.italia.it](Forum Italia).
+
+Your publiccode.yml validator bot.
+
+<sub>[:link: Developers Italia](https://developers.italia.it/it/riuso/pubblicazione) | [:page_facing_up: publiccode.yml format](https://yml.publiccode.tools)i | [:information_source:  My source code](https://github.com/italia/publiccode-issueopener)</sub>
+
+<!-- **commands** -->
