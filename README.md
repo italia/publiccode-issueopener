@@ -18,7 +18,7 @@ checks the validity of the `publiccode.yml` file for errors, logs them, and open
 accordingly.
 
 This aids in maintaining the high quality of software catalog metadata, and eventually
-ensures smooth public code sharing and reuse across different agencies.
+ensures smooth public code sharing and reuse across different administrations.
 
 ## 🚀 Features
 
