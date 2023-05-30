@@ -78,6 +78,7 @@ I contributi sono sempre benvenuti! Apri issue, fai fork del repository o invia 
 
 ## 🔗 Progetti correlati
 
+* [Standard publiccode.yml](https://github.com/publiccodeyml/publiccode.yml)
 * [publiccode-crawler](https://github.com/italia/publiccode-crawler)
 * [developers-italia-api](https://github.com/italia/developers-italia-api)
 
