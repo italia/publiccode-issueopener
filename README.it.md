@@ -1,11 +1,8 @@
 # publiccode-issueopener
 
-[![License](https://img.shields.io/github/license/italia/publiccode-issueopener.svg)]
-(https://github.com/italia/publiccode-issueopener/blob/main/LICENSE)
-[![Join the #publiccode channel](https://img.shields.io/badge/Slack%20channel-%23publiccode-blue.svg)]
-(https://app.slack.com/client/T6C27AXE0/CAM3F785T)
-[![Get invited](https://slack.developers.italia.it/badge.svg)]
-(https://slack.developers.italia.it/)
+[![License](https://img.shields.io/github/license/italia/publiccode-issueopener.svg)](https://github.com/italia/publiccode-issueopener/blob/main/LICENSE)
+[![Join the #publiccode channel](https://img.shields.io/badge/Slack%20channel-%23publiccode-blue.svg)](https://app.slack.com/client/T6C27AXE0/CAM3F785T)
+[![Get invited](https://slack.developers.italia.it/badge.svg)](https://slack.developers.italia.it/)
 
 <p align="center">
   <a href="README.md">Inglese</a> | 
