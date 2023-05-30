@@ -5,7 +5,7 @@
 [![Get invited](https://slack.developers.italia.it/badge.svg)](https://slack.developers.italia.it/)
 
 <p align="center">
-  <a href="README.md">English</a> | 
+  English | 
   <a href="README.it.md">Italiano</a>
 </p>
 
@@ -85,4 +85,4 @@ This software is maintained by the [Developers Italia team](https://developers.i
 
 Copyright© 2022-present - Presidency of the Council of Ministers (Italy)
 
-This software is released under the EUPL-1.2 license. Please see the LICENSE file for more details.
+This software is released under the EUPL-1.2 license. Please see the `LICENSE` file for more details.
