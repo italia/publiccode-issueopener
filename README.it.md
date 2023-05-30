@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="README.md">Inglese</a> | 
-  <a href="README.it.md">Italiano</a>
+  Italiano
 </p>
 
 publiccode-issueopener è un bot di automazione in Python progettato per
