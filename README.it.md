@@ -50,7 +50,7 @@ git clone https://github.com/italia/publiccode-issueopener
 cd publiccode-issueopener
 ```
 
-## 🎮 Utilizzo
+## 🎮 Uso
 
 Puoi eseguire lo script con:
 
