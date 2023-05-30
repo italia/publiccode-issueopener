@@ -36,7 +36,7 @@ by the publiccode.yml schema.
 Install the required Python libraries using pip:
 
 ```bash
-pip install argparse os hashlib re requests logging jinja2 PyGithub
+pip install -r requirements.txt
 ```
 
 ### Installation
