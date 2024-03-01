@@ -11,7 +11,7 @@ There are errors in the `publiccode.yml` file:
   <summary>
     Add
     <a href="https://github.com/italia/publiccode-parser-action">
-      <strong>publiccode-parser-go-action</strong>
+      <strong>publiccode-parser-action</strong>
     </a> to your GitHub repository, to automatically check your publiccode.yml
     at every commit
   </summary>
