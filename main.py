@@ -167,7 +167,7 @@ def main():
             print(f"Creating issue for {log.software['url']}...")
             repo.create_issue(title="Errors in publiccode.yml file", body=content)
         elif should_update_issue(sha1sum, issue):
-            print("Updating issue for {log.software['url']}...")
+            print(f"Updating issue for {log.software['url']}...")
             issue.edit(body=content)
         else:
             print("Doing nothing")
