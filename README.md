@@ -27,6 +27,13 @@ automatically trigger the creation of GitHub issues.
 - **publiccode.yml compliance:** Ensures publiccode.yml files adhere to the Standard set
 by the publiccode.yml schema.
 
+## Screenshot
+
+`publiccode-issueopener` will open issues looking like this:
+
+![image](./images/screenshot.png)
+
+
 ## 💻 Getting Started
 
 ### Prerequisites
