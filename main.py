@@ -96,7 +96,7 @@ def software_logs(days):
         page_after = body["links"]["next"]
         page = bool(page_after)
 
-    # XXX: get last for repo
+    seen_entities = set()
 
     for log in logs:
         match = re.search(
@@ -109,6 +109,11 @@ def software_logs(days):
 
             if not entity or entity == "//":
                 continue
+
+            if entity in seen_entities:
+                continue
+
+            seen_entities.add(entity)
 
             res = requests.get(f"{API_BASEURL}{entity}")
             res.raise_for_status()
