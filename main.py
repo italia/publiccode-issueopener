@@ -164,7 +164,7 @@ def should_update_issue(sha1sum: str, issue: github.Issue.Issue) -> bool:
     data = re.split("[,=]", m.group("data"))
     hidden_fields = dict(zip(data[::2], data[1::2]))
 
-    return issue.state == "open" or hidden_fields["sha1sum"] != sha1sum
+    return issue.state == "open" and hidden_fields["sha1sum"] != sha1sum
 
 
 def status(gh):
