@@ -12,4 +12,4 @@ COPY main.py .
 
 RUN pip install -r requirements.txt
 
-CMD ["./main.py", "--dry-run"]
+CMD ["./main.py"]
