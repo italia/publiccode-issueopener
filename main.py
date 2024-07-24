@@ -238,7 +238,7 @@ def run(gh, since, dry_run, lang):
                 time.sleep(sleep_duration)
                 print("done")
             else:
-                print(f"Error in the GitHub request, repo=${url}: {e}")
+                print(f"Error in the GitHub request, repo={url}: {e}")
             continue
 
     print("==== Summary ====")
