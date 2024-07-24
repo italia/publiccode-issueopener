@@ -18,7 +18,7 @@ There are errors in the `publiccode.yml` file:
 
   <pre>
     <samp>
-# Aggiungi questo a .github/workflows/publiccode-validation.yml
+# Copy this to .github/workflows/publiccode-validation.yml
 #
 on: [pull_request]
 
@@ -50,15 +50,12 @@ jobs:
    </p>
 </details>
 
-{{ debug }}
+<!-- {{ debug }} -->
 
 **Not sure what to do?**
 
-Join [https://slack.developers.italia.it][https://slack.developers.italia.it] and ask in
-the #publiccode channel or head to [https://forum.italia.it](Forum Italia).
+Join [https://slack.developers.italia.it](https://slack.developers.italia.it) and ask in the #publiccode channel or head to [Forum Italia](https://forum.italia.it).
 
-Your publiccode.yml validator bot.
-
-<sub>[:link: Developers Italia](https://developers.italia.it/it/riuso/pubblicazione) | [:page_facing_up: publiccode.yml format](https://yml.publiccode.tools)i | [:information_source:  My source code](https://github.com/italia/publiccode-issueopener)</sub>
+<sub>[:link: Developers Italia](https://developers.italia.it/en/reuse/publication) | [:page_facing_up: publiccode.yml format](https://yml.publiccode.tools)i | [:information_source:  My source code](https://github.com/italia/publiccode-issueopener) | [*]({{ api_log_url }})</sub>
 
 <!-- **commands** -->

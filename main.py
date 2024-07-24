@@ -174,9 +174,9 @@ def status(gh):
         print(f"{issue.state}\t{issue.updated_at.isoformat()}\t{issue.html_url}")
 
 
-def run(gh, since, dry_run):
+def run(gh, since, dry_run, lang):
     environment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates/"))
-    template = environment.get_template("github/issue.it.tpl.txt")
+    template = environment.get_template(f"github/issue.{lang}.tpl.txt")
 
     issues_created = 0
     issues_updated = 0
@@ -267,6 +267,14 @@ def main():
         default=False,
         help="Don't actually create or update issues, just print",
     )
+    parser.add_argument(
+        "--lang",
+        action="store",
+        dest="lang",
+        choices=["en", "it"],
+        default="en",
+        help="Use this language for the issues. (default: en)",
+    )
 
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("status")
@@ -281,7 +289,7 @@ def main():
     if args.command == "status":
         status(gh)
     else:
-        run(gh, args.since, args.dry_run)
+        run(gh, args.since, args.dry_run, args.lang)
 
 
 if __name__ == "__main__":
