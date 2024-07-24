@@ -19,7 +19,9 @@ import requests
 API_BASEURL = os.getenv("API_BASEURL", "https://api.developers.italia.it/v1")
 GITHUB_USERNAME = os.getenv("GITHUB_USERNAME", "publiccode-validator-bot")
 
-SoftwareLog = namedtuple("SoftwareLog", "log_url software formatted_error_output")
+SoftwareLog = namedtuple(
+    "SoftwareLog", "log_url software formatted_error_output datetime"
+)
 
 
 def to_markdown(error: str, repo_url: str) -> str:
@@ -124,7 +126,17 @@ def software_logs(days):
                 f'{API_BASEURL}/logs/{log["id"]}',
                 software,
                 to_markdown(match.group("parser_output"), software["url"]),
+                datetime.fromisoformat(log["createdAt"]),
             )
+
+
+def publiccodeyml_last_change(repo: github.Repository) -> datetime:
+    commits = repo.get_commits(path="publiccode.yml")
+
+    if commits.totalCount == 0:
+        return datetime.fromtimestamp(0)
+
+    return commits[0].commit.author.date.replace(tzinfo=timezone.utc)
 
 
 def issues(gh: github.Github, repo: str) -> list[github.Issue.Issue]:
@@ -215,8 +227,8 @@ def run(gh, since, dry_run, lang):
             iss = issues(gh, repo_path)
 
             issue = has_issue(iss)
+            repo = gh.get_repo(f"{repo_path}", lazy=True)
             if not issue:
-                repo = gh.get_repo(f"{repo_path}", lazy=True)
                 print(f"➕ Creating issue for {url}...")
                 if not dry_run:
                     repo.create_issue(
@@ -224,6 +236,10 @@ def run(gh, since, dry_run, lang):
                     )
 
                 issues_created += 1
+            elif publiccodeyml_last_change(repo) >= log.datetime:
+                print(
+                    f"⌛ publiccode.yml was changed in the repo after our log, doing nothing ({url})"
+                )
             elif should_update_issue(sha1sum, issue):
                 print(f"🔄 Updating issue for {url}...")
                 if not dry_run:
@@ -238,7 +254,10 @@ def run(gh, since, dry_run, lang):
                 reset_timestamp = int(e.headers.get("x-ratelimit-reset", 0))
                 sleep_duration = max(0, reset_timestamp - int(time.time()) + 10)
 
-                print(f"Rate limit exceeded. Sleeping for {sleep_duration} seconds...", end="")
+                print(
+                    f"Rate limit exceeded. Sleeping for {sleep_duration} seconds...",
+                    end="",
+                )
                 sys.stdout.flush()
                 time.sleep(sleep_duration)
                 print("done")
