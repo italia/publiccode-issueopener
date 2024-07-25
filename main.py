@@ -209,6 +209,15 @@ def run(gh, since, dry_run, lang):
             print(f"skipping {url} (codiceIPA is...)")
             continue
 
+        # Ignore some reachability errors until we implement
+        # https://github.com/italia/publiccode-issueopener/issues/24
+        if ": forbidden resource" in log.formatted_error_output:
+            print(f"skipping {url} (unreachability, forbidden resource...)")
+            continue
+        if ": i/o timeout" in log.formatted_error_output:
+            print(f"skipping {url} (unreachability, i/o timeout...)")
+            continue
+
         debug = urlparse(url).path
         sha1sum = hashlib.sha1(log.formatted_error_output.encode("utf-8")).hexdigest()
 
