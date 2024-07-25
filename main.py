@@ -237,6 +237,11 @@ def run(gh, since, dry_run, lang):
 
             issue = has_issue(iss)
             repo = gh.get_repo(f"{repo_path}", lazy=True)
+
+            if publiccodeyml_last_change(repo) >= log.datetime:
+                print(f"⌛ publiccode.yml was changed in the repo after our log, doing nothing ({url})")
+                continue
+
             if not issue:
                 print(f"➕ Creating issue for {url}...")
                 if not dry_run:
@@ -245,10 +250,6 @@ def run(gh, since, dry_run, lang):
                     )
 
                 issues_created += 1
-            elif publiccodeyml_last_change(repo) >= log.datetime:
-                print(
-                    f"⌛ publiccode.yml was changed in the repo after our log, doing nothing ({url})"
-                )
             elif should_update_issue(sha1sum, issue):
                 print(f"🔄 Updating issue for {url}...")
                 if not dry_run:
