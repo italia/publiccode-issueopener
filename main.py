@@ -205,10 +205,6 @@ def run(gh, since, dry_run, lang):
             print(f"🚫 {url} is not a GitHub repo. Only GitHub is supported for now.")
             continue
 
-        if "codiceIPA is " in log.formatted_error_output:
-            print(f"skipping {url} (codiceIPA is...)")
-            continue
-
         # Ignore some reachability errors until we implement
         # https://github.com/italia/publiccode-issueopener/issues/24
         if ": forbidden resource" in log.formatted_error_output:
