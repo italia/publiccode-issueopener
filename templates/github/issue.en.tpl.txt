@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     name: publiccode validation
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - uses: italia/publiccode-parser-action@v1
       with:
         publiccode: 'publiccode.yml'
@@ -52,10 +52,6 @@ jobs:
 
 <!-- {{ debug }} -->
 
-**Not sure what to do?**
-
-Join [https://slack.developers.italia.it](https://slack.developers.italia.it) and ask in the #publiccode channel or head to [Forum Italia](https://forum.italia.it).
-
-<sub>[:link: Developers Italia](https://developers.italia.it/en/reuse/publication) | [:page_facing_up: publiccode.yml format](https://yml.publiccode.tools)i | [:information_source:  My source code](https://github.com/italia/publiccode-issueopener) | [*]({{ api_log_url }})</sub>
+<sub>[:page_facing_up: publiccode.yml format](https://yml.publiccode.tools) | [:information_source:  My source code](https://github.com/italia/publiccode-issueopener) | [*]({{ api_log_url }})</sub>
 
 <!-- **commands** -->
