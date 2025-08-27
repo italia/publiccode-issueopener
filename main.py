@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
+# pylint: disable=missing-function-docstring,too-many-locals,too-many-branches,too-many-statements,line-too-long
+
 """Open issues in repos for errors in publiccode.yml."""
 
 import argparse
 import hashlib
-import logging
 import os
 import re
 import sys
@@ -18,6 +19,7 @@ import requests
 
 API_BASEURL = os.getenv("API_BASEURL", "https://api.developers.italia.it/v1")
 GITHUB_USERNAME = os.getenv("GITHUB_USERNAME", "publiccode-validator-bot")
+DEFAULT_TIMEOUT = 20
 
 SoftwareLog = namedtuple(
     "SoftwareLog", "log_url software formatted_error_output datetime"
@@ -25,6 +27,7 @@ SoftwareLog = namedtuple(
 
 
 def to_markdown(error: str, repo_url: str) -> str:
+    """Convert parser output to a compact Markdown table with source links."""
     out = "| |Message|\n|-|-|\n"
     icons = {
         "error": "❌",
@@ -50,8 +53,9 @@ def to_markdown(error: str, repo_url: str) -> str:
     return out
 
 
-def software():
-    software = []
+def get_software():
+    """Return all software entries from the API (paginated)."""
+    software_list = []
 
     page = True
     page_after = ""
@@ -62,19 +66,20 @@ def software():
             params={
                 "page[size]": 100,
             },
+            timeout=DEFAULT_TIMEOUT,
         )
         res.raise_for_status()
 
         body = res.json()
-        software += body["data"]
+        software_list += body["data"]
 
         page_after = body["links"]["next"]
         page = bool(page_after)
 
-    return software
+    return software_list
 
 
-def software_logs(days):
+def get_software_logs(days):
     logs = []
 
     page = True
@@ -89,6 +94,7 @@ def software_logs(days):
                 "from": begin.strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "page[size]": 100,
             },
+            timeout=DEFAULT_TIMEOUT,
         )
         res.raise_for_status()
 
@@ -117,7 +123,7 @@ def software_logs(days):
 
             seen_entities.add(entity)
 
-            res = requests.get(f"{API_BASEURL}{entity}")
+            res = requests.get(f"{API_BASEURL}{entity}", timeout=DEFAULT_TIMEOUT)
             res.raise_for_status()
 
             software = res.json()
@@ -139,7 +145,7 @@ def publiccodeyml_last_change(repo: github.Repository) -> datetime:
     return commits[0].commit.author.date.replace(tzinfo=timezone.utc)
 
 
-def issues(gh: github.Github, repo: str) -> list[github.Issue.Issue]:
+def get_issues(gh: github.Github, repo: str) -> list[github.Issue.Issue]:
     issues = gh.search_issues(
         "publiccode.yml in:title state:open is:issue",
         "updated",
@@ -148,7 +154,7 @@ def issues(gh: github.Github, repo: str) -> list[github.Issue.Issue]:
         author=GITHUB_USERNAME,
     )
 
-    return [issue for issue in issues]
+    return list(issues)
 
 
 def issues_by_state(
@@ -199,7 +205,7 @@ def run(gh, since, dry_run, lang):
     issues_updated = 0
     issues_untouched = 0
 
-    for log in software_logs(since):
+    for log in get_software_logs(since):
         url = log.software["url"].lower()
         if not url.startswith("https://github.com/"):
             print(f"🚫 {url} is not a GitHub repo. Only GitHub is supported for now.")
@@ -229,13 +235,15 @@ def run(gh, since, dry_run, lang):
         repo_path = urlparse(url).path[1:].removesuffix(".git")
 
         try:
-            iss = issues(gh, repo_path)
+            iss = get_issues(gh, repo_path)
 
             issue = has_issue(iss)
             repo = gh.get_repo(f"{repo_path}", lazy=True)
 
             if publiccodeyml_last_change(repo) >= log.datetime:
-                print(f"⌛ publiccode.yml was changed in the repo after our log, doing nothing ({url})")
+                print(
+                    f"⌛ publiccode.yml was changed in the repo after our log, doing nothing ({url})"
+                )
                 continue
 
             if not issue:
@@ -313,6 +321,7 @@ def main():
 
     gh = github.Github(os.getenv("BOT_GITHUB_TOKEN"))
 
+    # import logging
     # logging.basicConfig(level=logging.DEBUG)
     # github.enable_console_debug_logging()
 
