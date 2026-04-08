@@ -20,6 +20,7 @@ import requests
 API_BASEURL = os.getenv("API_BASEURL", "https://api.developers.italia.it/v1")
 GITHUB_USERNAME = os.getenv("GITHUB_USERNAME", "publiccode-validator-bot")
 DEFAULT_TIMEOUT = 20
+OPTOUT_LABEL = "publiccode-issueopener: disabled"
 
 SoftwareLog = namedtuple(
     "SoftwareLog", "log_url software entity formatted_error_output datetime"
@@ -225,6 +226,26 @@ def should_update_issue(sha1sum: str, issue: github.Issue.Issue) -> bool:
     return issue.state == "open" and hidden_fields["sha1sum"] != sha1sum
 
 
+def is_opted_out(gh: github.Github, repo_path: str) -> bool:
+    """Return True if the maintainer applied the opt-out label to any
+    bot-authored issue in the repo (open or closed)."""
+    query = (
+        f'repo:{repo_path} author:{GITHUB_USERNAME} '
+        f'label:"{OPTOUT_LABEL}" is:issue'
+    )
+    return gh.search_issues(query).totalCount > 0
+
+
+def is_opted_out(gh: github.Github, repo_path: str) -> bool:
+    """Return True if the maintainer applied the opt-out label to any
+    bot-authored issue in the repo (open or closed)."""
+    query = (
+        f"repo:{repo_path} author:{GITHUB_USERNAME} "
+        f'label:"{OPTOUT_LABEL}" is:issue'
+    )
+    return gh.search_issues(query).totalCount > 0
+
+
 def status(gh):
     issues = gh.search_issues(f"author:{GITHUB_USERNAME} type:issue sort:updated")
 
@@ -271,6 +292,10 @@ def run(gh, since, dry_run, lang, reachability_grace_days):
         repo_path = urlparse(url).path[1:].removesuffix(".git")
 
         try:
+            if is_opted_out(gh, repo_path):
+                print(f"🔕 {url} opted out via '{OPTOUT_LABEL}' label, skipping")
+                continue
+
             iss = get_issues(gh, repo_path)
 
             issue = has_issue(iss)
