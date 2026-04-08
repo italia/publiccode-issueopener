@@ -72,6 +72,16 @@ per autenticarsi quando apre issue nei repository
 - `API_BASEURL`: L'URL di base per l'API utilizzata per recuperare gli errori nei 
 file publiccode.yml. Default `https://api.developers.italia.it/v1`
 
+## Opt-out
+
+I manutentori di un repository possono impedire al bot di aprire o
+aggiornare issue aggiungendo la label `publiccode-issueopener: disabled`
+a una qualsiasi issue creata dal bot. Finché quella label esiste su
+almeno una issue del bot (aperta o chiusa), il repo viene saltato a
+ogni run.
+
+Per riattivarlo, basta rimuovere la label.
+
 ## 🤝 Contribuire
 
 I contributi sono sempre benvenuti! Apri issue, fai fork del repository o invia una Pull Request.
