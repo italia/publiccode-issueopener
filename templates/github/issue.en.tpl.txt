@@ -50,6 +50,10 @@ jobs:
    </p>
 </details>
 
+---
+
+<sub>To stop this bot from opening or updating issues on this repository, add the `publiccode-issueopener: disabled` label to this issue. Remove the label to re-enable.</sub>
+
 <!-- {{ debug }} -->
 
 <sub>[:page_facing_up: publiccode.yml format](https://yml.publiccode.tools) | [:information_source:  My source code](https://github.com/italia/publiccode-issueopener) | [*]({{ api_log_url }})</sub>

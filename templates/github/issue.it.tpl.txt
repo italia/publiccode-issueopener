@@ -50,6 +50,10 @@ jobs:
    </p>
 </details>
 
+---
+
+<sub>Per fermare il bot e impedirgli di aprire o aggiornare issue su questo repository, aggiungi la label `publiccode-issueopener: disabled` a questa issue. Rimuovi la label per riattivarlo.</sub>
+
 <!-- {{ debug }} -->
 
 **Serve aiuto?**

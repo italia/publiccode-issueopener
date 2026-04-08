@@ -75,6 +75,16 @@ To use the bot, you'll need to set some environment variables in your system:
 - `GITHUB_USERNAME`: The username of the GitHub bot that will open the issues. Default is `publiccode-validator-bot`
 - `API_BASEURL`: The base URL for the API used to retreive the errors in publiccode.yml files. Default is `https://api.developers.italia.it/v1`
 
+## Opting out
+
+Repository maintainers can stop the bot from opening or updating issues
+on their repo by adding the `publiccode-issueopener: disabled` label to
+any issue authored by the bot. As long as that label exists on at least
+one bot-authored issue (open or closed), the repo is skipped on every
+run.
+
+To re-enable, remove the label.
+
 ## 🤝 Contributing
 
 We always welcome contributions! Feel free to open issues, fork the repository or submit a Pull Request.
