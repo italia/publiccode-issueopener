@@ -230,16 +230,6 @@ def is_opted_out(gh: github.Github, repo_path: str) -> bool:
     """Return True if the maintainer applied the opt-out label to any
     bot-authored issue in the repo (open or closed)."""
     query = (
-        f'repo:{repo_path} author:{GITHUB_USERNAME} '
-        f'label:"{OPTOUT_LABEL}" is:issue'
-    )
-    return gh.search_issues(query).totalCount > 0
-
-
-def is_opted_out(gh: github.Github, repo_path: str) -> bool:
-    """Return True if the maintainer applied the opt-out label to any
-    bot-authored issue in the repo (open or closed)."""
-    query = (
         f"repo:{repo_path} author:{GITHUB_USERNAME} "
         f'label:"{OPTOUT_LABEL}" is:issue'
     )
