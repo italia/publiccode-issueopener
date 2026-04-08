@@ -22,8 +22,42 @@ GITHUB_USERNAME = os.getenv("GITHUB_USERNAME", "publiccode-validator-bot")
 DEFAULT_TIMEOUT = 20
 
 SoftwareLog = namedtuple(
-    "SoftwareLog", "log_url software formatted_error_output datetime"
+    "SoftwareLog", "log_url software entity formatted_error_output datetime"
 )
+
+REACHABILITY_ERRORS = (": forbidden resource", ": i/o timeout")
+
+
+def is_reachability_error(message: str) -> bool:
+    return any(s in message for s in REACHABILITY_ERRORS)
+
+
+def reachability_persistent(entity: str, grace_days: int) -> bool:
+    """Return True if there are no successful runs for this software in the
+    last grace_days. A single GOOD log inside the window means the current
+    reachability error is transient."""
+    cutoff = datetime.now(timezone.utc) - timedelta(days=grace_days)
+
+    page_after = ""
+    while True:
+        res = requests.get(
+            f"{API_BASEURL}{entity}/logs{page_after}",
+            params={"page[size]": 100},
+            timeout=DEFAULT_TIMEOUT,
+        )
+        res.raise_for_status()
+        body = res.json()
+
+        for log in body["data"]:
+            created = datetime.fromisoformat(log["createdAt"])
+            if created <= cutoff:
+                return True
+            if "GOOD publiccode.yml" in log["message"]:
+                return False
+
+        page_after = body["links"]["next"] or ""
+        if not page_after:
+            return True
 
 
 def to_markdown(error: str, repo_url: str) -> str:
@@ -131,6 +165,7 @@ def get_software_logs(days):
             yield SoftwareLog(
                 f'{API_BASEURL}/logs/{log["id"]}',
                 software,
+                entity,
                 to_markdown(match.group("parser_output"), software["url"]),
                 datetime.fromisoformat(log["createdAt"]),
             )
@@ -197,7 +232,7 @@ def status(gh):
         print(f"{issue.state}\t{issue.updated_at.isoformat()}\t{issue.html_url}")
 
 
-def run(gh, since, dry_run, lang):
+def run(gh, since, dry_run, lang, reachability_grace_days):
     environment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates/"))
     template = environment.get_template(f"github/issue.{lang}.tpl.txt")
 
@@ -211,14 +246,15 @@ def run(gh, since, dry_run, lang):
             print(f"🚫 {url} is not a GitHub repo. Only GitHub is supported for now.")
             continue
 
-        # Ignore some reachability errors until we implement
-        # https://github.com/italia/publiccode-issueopener/issues/24
-        if ": forbidden resource" in log.formatted_error_output:
-            print(f"skipping {url} (unreachability, forbidden resource...)")
-            continue
-        if ": i/o timeout" in log.formatted_error_output:
-            print(f"skipping {url} (unreachability, i/o timeout...)")
-            continue
+        # Reachability and timeout errors are often transient: only act on
+        # them if the same error has been present for at least the grace
+        # period, with no successful run in between.
+        if is_reachability_error(log.formatted_error_output):
+            if not reachability_persistent(log.entity, reachability_grace_days):
+                print(
+                    f"skipping {url} (reachability error, not persistent for {reachability_grace_days} days)"
+                )
+                continue
 
         debug = urlparse(url).path
         sha1sum = hashlib.sha1(log.formatted_error_output.encode("utf-8")).hexdigest()
@@ -306,6 +342,14 @@ def main():
         help="Don't actually create or update issues, just print",
     )
     parser.add_argument(
+        "--reachability-grace-days",
+        action="store",
+        dest="reachability_grace_days",
+        type=int,
+        default=7,
+        help="Only open issues for reachability/timeout errors when they have been present for at least this many days (default: 7)",
+    )
+    parser.add_argument(
         "--lang",
         action="store",
         dest="lang",
@@ -328,7 +372,7 @@ def main():
     if args.command == "status":
         status(gh)
     else:
-        run(gh, args.since, args.dry_run, args.lang)
+        run(gh, args.since, args.dry_run, args.lang, args.reachability_grace_days)
 
 
 if __name__ == "__main__":
