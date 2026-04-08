@@ -26,7 +26,12 @@ SoftwareLog = namedtuple(
     "SoftwareLog", "log_url software entity formatted_error_output datetime"
 )
 
-REACHABILITY_ERRORS = (": forbidden resource", ": i/o timeout")
+REACHABILITY_ERRORS = (
+    ": forbidden resource",
+    ": i/o timeout",
+    "context deadline exceeded",
+    "not reachable",
+)
 
 
 def is_reachability_error(message: str) -> bool:
