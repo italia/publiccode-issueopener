@@ -30,7 +30,9 @@ REACHABILITY_ERRORS = (
     ": forbidden resource",
     ": i/o timeout",
     "context deadline exceeded",
-    "not reachable",
+    "no such host",
+    "connection refused",
+    "tls handshake",
 )
 
 
